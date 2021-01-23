@@ -1,5 +1,5 @@
-from typing import Either
-from pydantic import BaseModel, Field
+from typing import Any, List
+from pydantic import BaseModel
 
 
 class RequestConfig(BaseModel):
@@ -15,9 +15,15 @@ class RequestConfig(BaseModel):
     timeout: float = None
     allow_redirects: bool = True
     proxies: dict = None
-    verify: bool = True
+    verify: Any = True
     stream: bool = False
-    cert: str = None
+    cert: Any = None
+
+
+class DataMapper(BaseModel):
+    selector: str
+    name: str
+    schema: str
 
 
 class ScrapConfiguration(BaseModel):
@@ -26,5 +32,5 @@ class ScrapConfiguration(BaseModel):
     the configuration instance should be validated against this model.
     """
     request_config: RequestConfig
-    data_mapper: DataMapper
+    data_mapper: List[DataMapper]
 
