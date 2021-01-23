@@ -16,11 +16,11 @@ def cli():
 @click.command()
 @click.argument("url")
 @click.argument("config")
-def scrape(url, config):
+def scrape(url, scrap_config):
     datastore = MongoDBDataStore(collection=mongodb_config.DEFAULT_COLLECTION)
-    method = config.pop("method")
-    selector_mapping = config.pop("selector_mapping")
-    html_provider = HTMLViaRequest(url=url, method=method, params=config)
+    method = scrap_config.pop("method")
+    selector_mapping = scrap_config.pop("selector_mapping")
+    html_provider = HTMLViaRequest(url=url, method=method, params=scrap_config)
     soup = BeautifulSoup(html_provider.get_html())
     for _selector, _config in selector_mapping.items():
         data_type = _config.pop("data_type")
