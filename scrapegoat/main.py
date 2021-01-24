@@ -1,38 +1,30 @@
-import click
-
-from bs4 import BeautifulSoup
-
-from scrapegoat.config import mongodb as mongodb_config
-from scrapegoat.provider.html.HTMLViaRequest import HTMLViaRequest
+import json
+from scrapegoat.commands import scrap
+from scrapegoat.models.ScrapConfig import ScrapConfiguration
 from scrapegoat.provider.mongodb.DataStore import MongoDBDataStore
-from scrapegoat.validator.SchemaValidator import SchemaValidator
 
+if __name__ == '__main__':
+    scraped_data = scrap.scrap(ScrapConfiguration(
+        **{
+            "request_config": {"url": 'https://python.org', "method": "get"},
+            "data_mapper": [
+                {
+                    "selector": "title",
+                    "name": "Title",
+                    "attribute": "text"
+                },
+                {
+                    "selector": "#content div section div div.small-widget h2",
+                    "name": "Widget Title",
+                    "attribute": "text"
+                }
+            ]
+        }
+    ))
 
-@click.group()
-def cli():
-    pass
-
-
-@click.command()
-@click.argument("url")
-@click.argument("config")
-def scrape(url, scrap_config):
-    datastore = MongoDBDataStore(collection=mongodb_config.DEFAULT_COLLECTION)
-    method = scrap_config.pop("method")
-    selector_mapping = scrap_config.pop("selector_mapping")
-    html_provider = HTMLViaRequest(url=url, method=method, params=scrap_config)
-    soup = BeautifulSoup(html_provider.get_html())
-    for _selector, _config in selector_mapping.items():
-        data_type = _config.pop("data_type")
-        attribute = _config.pop("attribute")
-
-        value = [item.get(attribute) for item in soup.select(_selector)]
-
-        if len(value) == 1:
-            value = value[0]
-
-        if SchemaValidator.validate(value, data_type):
-            # write_data(url, selector, name, value)
-            datastore.write(value)
-
-
+    for item in scraped_data.data:
+        data_store = MongoDBDataStore("scraped_data")
+        data_store.write({
+            "url": scraped_data.config.request_config.url,
+            **item.dict()
+        })

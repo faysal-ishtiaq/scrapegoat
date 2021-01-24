@@ -1,13 +1,12 @@
 from typing import Any, List
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 
 class RequestConfig(BaseModel):
     method: str
-    url: str
+    url: HttpUrl
     params: dict = None  # sent in query string
     data: dict = None  # sent in request body
-    json: dict = None  # sent in request body
     headers: dict = None
     cookies: dict = None
     files: dict = None
@@ -23,7 +22,7 @@ class RequestConfig(BaseModel):
 class DataMapper(BaseModel):
     selector: str
     name: str
-    schema: str
+    attribute: str
 
 
 class ScrapConfiguration(BaseModel):

@@ -1,9 +1,10 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
 
 setup(
     name='scrapegoat',
     version='0.1.0',
-    packages=['scrapegoat', 'scrapegoat.engine'],
+    packages=find_packages(),
     url='https://github.com/faysal-ishtiaq/scrapegoat',
     license='GNU General Public License v3.0',
     author='faysal',

@@ -1,11 +1,12 @@
 import os
 from pymongo import MongoClient
+from scrapegoat.config import mongodb
 
 
 class MongoDBDataStore:
     def __init__(self, collection):
-        self.client = MongoClient(host=os.getenv("mongodb_host"), port=os.getenv("mongodb_port", ""))
-        self.collection = self.client[os.getenv("mongodb_database")][collection]
+        self.client = MongoClient(host=mongodb.HOST, port=mongodb.PORT)
+        self.collection = self.client[mongodb.DB_NAME][collection]
 
     def write(self, document: dict):
         return self.collection.insert_one(document)
