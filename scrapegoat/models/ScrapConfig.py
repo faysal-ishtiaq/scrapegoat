@@ -1,5 +1,12 @@
-from typing import Any, List
+from enum import Enum
+from typing import Any, List, Optional
 from pydantic import BaseModel, HttpUrl
+
+
+class ScrapContextEnum(str, Enum):
+    api = 'api'
+    render = 'render'
+    workflow = 'workflow'
 
 
 class RequestConfig(BaseModel):
@@ -30,6 +37,7 @@ class ScrapConfiguration(BaseModel):
     When passing scrap configuration along with URL,
     the configuration instance should be validated against this model.
     """
+    context: Optional[str]
     request_config: RequestConfig
     data_mapper: List[DataMapper]
 
