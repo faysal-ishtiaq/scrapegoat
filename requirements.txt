@@ -2,5 +2,6 @@ Click
 requests
 pymongo
 pydantic
+selenium
 jsonschema
 beautifulsoup4
